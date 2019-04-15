@@ -1,0 +1,51 @@
+{% extends 'diagnosis/base.html' %}
+
+{%block content%}
+<dir class="container">
+    <form method="POST" action="{%url 'save_diagnosis'%}" name=>
+	    {%csrf_token%}	    
+        <div class="card shadow-lg mb-5">
+			<h4 class="card-header">Пациент</h4>
+            <div class="card-body">
+            	<div>
+            		<select name="patient" class="custom-select" required id="id_patient">
+            			<option value="" selected>---------</option>
+                    	{%for patient in patients%}
+                    		<option value="{{patient.id}}">{{patient}} </option>{
+                    	{%endfor%}
+            		</select>
+            	</div>
+       		</div>
+   	   </div>
+   	   <div class="card shadow-lg">
+   	   	<h4 class="card-header">Диагностика</h4>
+   	   	<div class="card-body">
+   	   		 <div class="card-columns">
+        	{%for question in questions%}
+        	<div class="card mx-2 my-2">
+        		<div class="card-body">
+        		<h4 class="card-title">{{question.title}}</h4>
+        		{{question.text}}
+        		</div>
+
+        		<div class="card-footer">
+        			{%for answer in answers%}
+        			<div class="custom-control custom-radio" >
+						 <input type="radio" id="q{{question.id}}a{{answer.id}}" name="answerRadioForQuestion{{question.id}}" class="custom-control-input" value="{{answer.id}}" required >
+ 						 <label class="custom-control-label" for="q{{question.id}}a{{answer.id}}">{{answer.text}}</label>
+					</div>
+        			{%endfor%}
+
+        		</div>
+        	</div>
+            {%endfor%}
+	    </div>
+   	   	</div>
+   	   </div>
+   	   <input type="hidden" name="doctor" value="{{user.get_username}}">
+	   <input type="submit" class="btn btn-success mt-2" name="submit" > 
+    </form>	
+
+</dir>
+
+{%endblock%}

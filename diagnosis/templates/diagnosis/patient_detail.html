@@ -1,0 +1,75 @@
+{% extends 'diagnosis/base.html' %}
+
+{%block content%}
+<div class="container">
+        <div class="card mt-4 shadow-lg">
+            <h4 class="card-header">Пациент</h4>
+            <form class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="inputSurname">Фамилия</label>
+                        <input type="text" readonly class="form-control-plaintext border rounded" id="inputSurname" value="{{patient.surname}}">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputName">Имя</label>
+                        <input type="text" readonly class="form-control-plaintext border rounded" id="inputName" value="{{patient.name}}">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputPatronymic">Отчество</label>
+                        <input type="text" readonly class="form-control-plaintext border rounded" id="inputPatronymic" value="{{patient.patronymic|default_if_none:'-'}}">
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="inputGender">Пол</label>
+                        <input type="text" readonly class="form-control-plaintext border rounded" id="inputGender" value="{{patient.get_gender_display}}">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="inputDOB">Дата рождения</label>
+                        <input type="text" readonly class="form-control-plaintext border rounded" id="inputDOB" value="{{patient.date_of_birth}}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-9">
+                        <label for="inputAddress">Адрес</label>
+                        <input type="text" readonly class="form-control-plaintext border rounded" id="inputAddress" value="{{patient.address}}">
+                    </div> 
+                    <div class="form-group col-md-3">
+                        <label for="inputPhoneNumber">Телефон</label>
+                        <input type="text" readonly class="form-control-plaintext border rounded" id="inputPhoneNumber" value="{{patient.phone|default_if_none:'-'}}">
+                    </div>
+                </div>
+                <div class="form-row">
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card  mt-4 shadow-lg">
+            <h4 class="card-header">Ранние диагностики</h4>
+            <div class="card-body table-responsive">
+                <table class="table table-light table-bordered table-striped table-hover  col-md-12">
+                    <thead>
+                        <tr>
+                           <th>#</th>
+                           <th>Врач</th>
+                           <th>Дата диагностики</th>
+                           <th>Время</th>
+                           <th>Действия</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for diagnosis in patient.diagnosis_set.all %}                        
+                            <tr>
+                                <th scope="row">{{diagnosis.id}} </th>
+                                <td>{{diagnosis.doctor}}</td>
+                                <td>{{diagnosis.diagnosis_date.date}}</td>
+                                <td>{{diagnosis.diagnosis_date.time}}</td>
+                                <td><a class="btn btn-info"  href="{% url 'diagnosis_detail' pk=diagnosis.pk %}">Подробно</a></td>
+                             </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{%endblock%}

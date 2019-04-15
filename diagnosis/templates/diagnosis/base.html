@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+        crossorigin="anonymous">
+
+    {%block title%} <title>diagnosis</title> {%endblock%}
+</head>
+
+<body background="https://images.pexels.com/photos/96622/pexels-photo-96622.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940">
+{%block navbar%}
+<nav class="navbar navbar-expand-sm navbar-light bg-light sticky-top">
+        <span class="navbar-brand">Меню</span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav nav mr-auto">
+              
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'main'%}">Главная <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a href="{%url 'diagnosis_new'%}" class="nav-link">Диагностика</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'patients'%}" class="nav-link">Пациенты</a>
+                </li>
+            </ul>
+            <form class="ml-auto form-inline " action="">
+                <a class="btn btn-outline-danger" href="{% url 'logout'%}">Выход</a>
+            </form>
+        </div>
+    </nav>
+{%endblock%}
+{%block content%}
+{%endblock%}
+<div class="table-responsive">
+    {%block patients%}{%endblock%}
+</div>
+{%block patientinfo%}{%endblock%}
+{%block questions%}{%endblock%}
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

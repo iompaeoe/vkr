@@ -1,0 +1,49 @@
+{% extends 'diagnosis/base.html' %}
+
+{%block title%}
+<title>Main</title>
+{%endblock%}
+
+{%block content%}
+
+  <div class="card-deck my-4 mx-4">
+        <div class="card">
+            <h4 class="card-header">Диагностика</h4>
+            <div class="card-body ">
+            	{%if perms.diagnosis.add_diagnosis %}
+                <div class="btn-group-vertical w-100" role="group"> <a class="btn btn-secondary"
+                        href="{%url 'diagnosis_new' %}">Перейти к диагностике</a>
+                    <button type="button" class="btn btn-outline-secondary"> Справка</button>
+                </div>
+                {%else%}
+                <div class="card-body ">
+                   <p>У вас недостаточно прав для использования этой функции</p>
+                </div>
+                {%endif%}
+            </div>
+        </div>
+
+        <div class="card">
+            <h4 class="card-header">Пациенты</h4>
+            <div class="card-body ">
+                <div class="btn-group-vertical w-100" role="group"> <button type="button" class="btn btn-secondary"
+                        onClick='location.href="{% url "patients"%}"'>
+                        Список пациентов</button>
+                    <button type="button" class="btn btn-outline-secondary">Справка</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">               
+         <h4 class="card-header">Профиль ({{user.get_username}})</h4>
+         <div class="card-body ">
+                <div class="btn-group-vertical w-100" role="group"> <button type="button" class="btn btn-secondary"
+                        onClick='location.href=""'> Перейти к своему профилю</button>
+                    <button type="button" class="btn btn-outline-secondary">Справка</button>
+                </div>
+            </div>
+        </div>
+    </div>   
+    
+
+{%endblock%}

@@ -1,0 +1,12 @@
+{% extends 'diagnosis/base.html' %}
+{%block title%}
+<title>Logout</title>
+{%endblock%}
+{%block navbar%}
+{%endblock%}
+{%block content%}
+
+<div class="card mx-auto mt-5 bg-light shadow-lg" style="width: 300px;">
+        <h4 class="card-header">До свидания!</h4>
+        <div class="card-body"><a href="{% url 'login'%}">Нажмите здесь, чтобы войти снова.</a></div>
+{%endblock%}
