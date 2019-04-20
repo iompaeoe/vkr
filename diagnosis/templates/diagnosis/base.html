@@ -28,7 +28,7 @@
                     <a class="nav-link" href="{% url 'main'%}">Главная <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item ">
-                    <a href="{%url 'diagnosis_new'%}" class="nav-link">Диагностика</a>
+                    <a href="{%url 'select_inquirer'%}" class="nav-link">Диагностика</a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'patients'%}" class="nav-link">Пациенты</a>
@@ -38,7 +38,7 @@
                 <a class="btn btn-outline-danger" href="{% url 'logout'%}">Выход</a>
             </form>
         </div>
-    </nav>
+</nav>
 {%endblock%}
 {%block content%}
 {%endblock%}

@@ -2,7 +2,7 @@
 
 {%block content%}
 <dir class="container">
-    <form method="POST" action="{%url 'save_diagnosis'%}" name=>
+    <form method="POST" action="{%url 'save_diagnosis' pk=inquirer.id%}" name=>
 	    {%csrf_token%}	    
         <div class="card shadow-lg mb-5">
 			<h4 class="card-header">Пациент</h4>
@@ -30,10 +30,12 @@
 
         		<div class="card-footer">
         			{%for answer in answers%}
-        			<div class="custom-control custom-radio" >
-						 <input type="radio" id="q{{question.id}}a{{answer.id}}" name="answerRadioForQuestion{{question.id}}" class="custom-control-input" value="{{answer.id}}" required >
- 						 <label class="custom-control-label" for="q{{question.id}}a{{answer.id}}">{{answer.text}}</label>
-					</div>
+        				{%if answer.question_id == question.id%}
+        					<div class="custom-control custom-radio" >
+								 <input type="radio" id="q{{question.id}}a{{answer.id}}" name="answerRadioForQuestion{{question.id}}" class="custom-control-input" value="{{answer.id}}" required >
+ 								 <label class="custom-control-label" for="q{{question.id}}a{{answer.id}}">{{answer.text}}</label>
+						</div>
+						{%endif%}
         			{%endfor%}
 
         		</div>

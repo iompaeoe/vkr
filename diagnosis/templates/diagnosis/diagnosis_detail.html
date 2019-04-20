@@ -10,6 +10,7 @@
                            <th>Врач</th>
                            <th>Дата</th>
                            <th>Время</th>
+                           <th>Опросник</th>
                 		</tr>
                 	</thead>
                 	<tbody>
@@ -17,6 +18,7 @@
                 			<td>{{diagnosis.doctor.surname}} {{diagnosis.doctor.name}} {{diagnosis.doctor.patronymic|default_if_none:""}}</td>
                 			<td>{{diagnosis.diagnosis_date.date}}</td>
                             <td>{{diagnosis.diagnosis_date.time}}</td>
+                            <td>{{diagnosis.inquirer.name}}</td>
                 		</tr>
                 	</tbody>
                 </table>

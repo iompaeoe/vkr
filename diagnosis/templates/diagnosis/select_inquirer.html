@@ -1,0 +1,31 @@
+{% extends 'diagnosis/base.html' %}
+{%block content%}
+        <div class="card my-4 mx-4 shadow-lg">
+        	<h4 class="card-header">Доступные опросники</h4>
+        	 <div class="card-body">
+        	 	<div class="card-columns">
+        	 		{%for inquirer in inquirers%}
+        	 		<div id="accordion" role="tablist">
+        	 		<div class="card">
+        	 			<div class="card-body">
+							<h4 class="card-title d-inline" role="tab" id="heading{{inquirer.inquirer.id}}">
+								{{inquirer.inquirer.name}}
+							</h4>
+							
+								<a class="badge badge-info" data-toggle="collapse" href="#collapse{{inquirer.inquirer.id}}" aria-expanded="true" aria-controls="collapse{{inquirer.inquirer.id}}">?
+     							 </a>
+							
+							<div id="collapse{{inquirer.inquirer.id}}" class="collapse" role="tabpanel" aria-labelledby="heading{{inquirer.inquirer.id}}">
+								{{inquirer.inquirer.description}}
+							</div>
+        	 			</div>
+        	 			<div class="card-footer">
+        	 				<a class="btn btn-primary"  href="{% url 'diagnosis_new' pk=inquirer.inquirer.pk %}">Выбрать</a>
+        	 			</div>
+					</div>
+				</div>
+        	 		{% endfor %}
+        	 	</div>
+        	 </div>
+        </div>
+{%endblock%}

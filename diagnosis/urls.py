@@ -7,7 +7,7 @@ urlpatterns = [
     path('patients',views.patients_list,name='patients'),
     path('patient/<int:pk>/', views.patient_detail, name='patient_detail'),
     path('diagnosis/<int:pk>/', views.diagnosis_detail, name='diagnosis_detail'),
-    path('diagnosis/new', views.diagnosis_new, name='diagnosis_new'),
-    path('diagnosis/new/save', views.save_diagnosis, name='save_diagnosis'),
-
+    path('diagnosis/new/<int:pk>', views.diagnosis_new, name='diagnosis_new'),
+    path('diagnosis/new/<int:pk>/save', views.save_diagnosis, name='save_diagnosis'),
+    path('diagnosis/select_inquirer',views.select_inquirer,name='select_inquirer')
 ]
