@@ -25,6 +25,26 @@
             </form>
         </div>
         <div class="card mt-4 shadow-lg">
+        	<h4 class="card-header">Предполагаемые диагнозы</h4>
+        	<div class="card-body">
+        		<div class="card-columns">
+					{% for result in results %}
+        	 			<div class="card">
+        	 				<div class="card-body">
+								<h4 class="card-title d-inline">{{result.result.name}}</h4>
+								<a class="badge badge-info" data-toggle="collapse" href="#collapse{{result.result.id}}" aria-expanded="true" aria-controls="collapse{{result.result.id}}">?
+     							 </a>
+							
+							<div id="collapse{{result.result.id}}" class="collapse" role="tabpanel" aria-labelledby="heading{{result.result.id}}">
+								{{result.result.description}}
+							</div>
+        	 				</div>
+        				</div>
+        			{%endfor%}
+       			 </div>
+       		</div>
+       	</div>
+        <div class="card mt-4 shadow-lg">
         	<h4 class="card-header">Результаты опроса</h4>
         	 <div class="card-body">
         	 	<div class="card-columns">

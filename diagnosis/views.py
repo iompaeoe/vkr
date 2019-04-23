@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Patient, Diagnosis, Question, Answer, Doctor, Survey, Inquirer, SpecialityInquirer, InquirerQuestion
+from .models import Patient, Diagnosis, Question, Answer, Doctor, Survey, Inquirer, SpecialityInquirer, InquirerQuestion, Result, DiagnosisResult
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -30,7 +30,8 @@ def patient_detail(request, pk):
 def diagnosis_detail(request,pk):
     diagnosis = get_object_or_404(Diagnosis, pk=pk)
     surveys = Survey.objects.filter(diagnosis=diagnosis)
-    return render(request, 'diagnosis/diagnosis_detail.html', {'diagnosis': diagnosis,'surveys':surveys})
+    diagnosis_result = DiagnosisResult.objects.filter(diagnosis=diagnosis)
+    return render(request, 'diagnosis/diagnosis_detail.html', {'diagnosis': diagnosis,'surveys':surveys,'results':diagnosis_result})
 
 @permission_required('diagnosis.add_diagnosis')
 @login_required
@@ -80,12 +81,16 @@ def save_diagnosis(request,pk):
             answer_values.append(int(answer.value))
             survey.save()
         answer_values.append(int(timezone.now().year-patient.date_of_birth.year))
-        model = joblib.load('diagnosis/models/dermatology_model.pkl')
-        predicate(answer_values,model)
-    #считать из БД результаты опроса и отправить в функцию-обработчик (нейронная сеть)
-    #добавить модель диагнозов. В зависимости от ответа НС выбирать Диагноз и выводить его пользователю. 
-    #подготовить шаблон заключения
-    return HttpResponseRedirect(reverse('main'))
+        model = joblib.load(inquirer.ANN_model)
+        result_code = predicate(answer_values,model)
+        result = get_object_or_404(Result,code=result_code)
+        diagnosis_result = DiagnosisResult(diagnosis=diagnosis,result=result)
+        diagnosis_result.save()
+        print (diagnosis_result)
+    #считать из БД результаты опроса и отправить в функцию-обработчик (нейронная сеть) [v]
+    #добавить модель диагнозов. В зависимости от ответа НС выбирать Диагноз и выводить его пользователю. [x]
+    #подготовить шаблон заключения [x]
+    return diagnosis_detail(request,pk=diagnosis.id)
 
 @login_required
 @permission_required('diagnosis.add_diagnosis')
@@ -95,3 +100,4 @@ def select_inquirer(request):
     specialty = doctor.specialty_id
     speciality_inquirers = SpecialityInquirer.objects.filter(specialty=specialty)
     return render(request, 'diagnosis/select_inquirer.html', {'inquirers': speciality_inquirers})
+

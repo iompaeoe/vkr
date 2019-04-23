@@ -11,4 +11,4 @@ def predicate(features,model):
     features = np.array(features).reshape(1,-1)
     features = features.astype(np.float64)
     pred = model.predict(features)
-    print('---->',pred)
+    return pred

@@ -87,6 +87,7 @@ class Specialty(models.Model):
 class Inquirer(models.Model):
     name=models.CharField(max_length=200, blank=False,null=False)
     description = models.TextField()
+    ANN_model = models.FileField(max_length=None)
     def __str__(self):
         return '({0}) {1}'.format(self.id, self.name)
 
@@ -103,3 +104,18 @@ class InquirerQuestion(models.Model):
     question = models.ForeignKey('Question',on_delete=models.CASCADE,null=False,blank=False)
     def __str__(self):
         return 'Опросник {0}; Вопрос: {1}'.format(self.inquirer.name,self.question.title)
+
+class Result(models.Model):
+    name = models.CharField(max_length=200,blank=False,null=False)
+    description = models.TextField()
+    code = models.IntegerField(blank=False,null=False)
+    def __str__(self):
+        return 'Диагноз: {}'.format(self.name)
+
+class DiagnosisResult(models.Model):
+    class Meta:
+        unique_together = (('diagnosis','result'),)
+    diagnosis = models.ForeignKey('Diagnosis',on_delete=models.CASCADE,null=False,blank=False)
+    result = models.ForeignKey('Result',on_delete=models.CASCADE,null=False,blank=False)
+    def __str__(self):
+        return 'Для диагностики {0} {1}'.format(self.diagnosis.id, self.result) 
