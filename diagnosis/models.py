@@ -87,7 +87,8 @@ class Specialty(models.Model):
 class Inquirer(models.Model):
     name=models.CharField(max_length=200, blank=False,null=False)
     description = models.TextField()
-    ANN_model = models.FileField(max_length=None)
+    solver = models.FileField(max_length=None)
+    is_ann = models.BooleanField(default = False)
     def __str__(self):
         return '({0}) {1}'.format(self.id, self.name)
 
@@ -108,7 +109,7 @@ class InquirerQuestion(models.Model):
 class Result(models.Model):
     name = models.CharField(max_length=200,blank=False,null=False)
     description = models.TextField()
-    code = models.IntegerField(blank=False,null=False)
+    code = models.CharField(max_length=50,blank=False,null=False,unique=True)
     def __str__(self):
         return 'Диагноз: {}'.format(self.name)
 

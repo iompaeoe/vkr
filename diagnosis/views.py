@@ -9,6 +9,8 @@ from django.db import transaction
 from django.conf import settings
 from django.utils import timezone
 from .neuro import predicate
+from .solver import import_source
+import pickle
 import sklearn
 from sklearn.externals import joblib
 
@@ -81,15 +83,20 @@ def save_diagnosis(request,pk):
             answer_values.append(int(answer.value))
             survey.save()
         answer_values.append(int(timezone.now().year-patient.date_of_birth.year))
-        model = joblib.load(inquirer.ANN_model)
-        result_code = predicate(answer_values,model)
-        result = get_object_or_404(Result,code=result_code)
+        if inquirer.is_ann:
+            model = joblib.load(inquirer.solver)
+            result_code = predicate(answer_values,model)
+        else:
+            module = import_source('F:/WebApp/leongard.py','leongard')
+            result_code=module.analysis(answer_values)
+            print("--->",result_code[0])
+        result = get_object_or_404(Result,code=result_code[0])
         diagnosis_result = DiagnosisResult(diagnosis=diagnosis,result=result)
         diagnosis_result.save()
         print (diagnosis_result)
     #считать из БД результаты опроса и отправить в функцию-обработчик (нейронная сеть) [v]
-    #добавить модель диагнозов. В зависимости от ответа НС выбирать Диагноз и выводить его пользователю. [x]
-    #подготовить шаблон заключения [x]
+    #добавить модель диагнозов. В зависимости от ответа НС выбирать Диагноз и выводить его пользователю. [~]
+    #подготовить шаблон заключения [x]2/
     return diagnosis_detail(request,pk=diagnosis.id)
 
 @login_required
