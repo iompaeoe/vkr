@@ -1,10 +1,10 @@
 import importlib
 import importlib.util
 
-def import_source(module_file_path,module_name):
-    ##module_file_path = module_name.__file__
-    ##module_name = module_name.__name__
-    
+def import_source(input_module):
+    module_file_path = input_module.path
+    module_name = input_module.name
+    print('------->',module_file_path,module_name)
     module_spec = importlib.util.spec_from_file_location(
         module_name, module_file_path
     )

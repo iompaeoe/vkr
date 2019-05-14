@@ -88,6 +88,7 @@ class Inquirer(models.Model):
     name=models.CharField(max_length=200, blank=False,null=False)
     description = models.TextField()
     solver = models.FileField(max_length=None)
+    medical_report_template = models.FileField (max_length=None,blank=True,null=True)
     is_ann = models.BooleanField(default = False)
     def __str__(self):
         return '({0}) {1}'.format(self.id, self.name)

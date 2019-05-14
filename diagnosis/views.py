@@ -4,15 +4,19 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from .forms import DiagnosisForm
 from django.db import transaction
 from django.conf import settings
 from django.utils import timezone
 from .neuro import predicate
 from .solver import import_source
+from .med_report_handler import download
+import transliterate
 import pickle
 import sklearn
 from sklearn.externals import joblib
+import io
 
 @login_required
 def main(request):
@@ -33,7 +37,7 @@ def diagnosis_detail(request,pk):
     diagnosis = get_object_or_404(Diagnosis, pk=pk)
     surveys = Survey.objects.filter(diagnosis=diagnosis)
     diagnosis_result = DiagnosisResult.objects.filter(diagnosis=diagnosis)
-    return render(request, 'diagnosis/diagnosis_detail.html', {'diagnosis': diagnosis,'surveys':surveys,'results':diagnosis_result})
+    return render(request, 'diagnosis/diagnosis_detail.html', {'diagnosis': diagnosis,'surveys':surveys,'results':diagnosis_result,})
 
 @permission_required('diagnosis.add_diagnosis')
 @login_required
@@ -87,12 +91,13 @@ def save_diagnosis(request,pk):
             model = joblib.load(inquirer.solver)
             result_code = predicate(answer_values,model)
         else:
-            module = import_source('F:/WebApp/leongard.py','leongard')
+            module = import_source(inquirer.solver)
             result_code=module.analysis(answer_values)
-            print("--->",result_code[0])
-        result = get_object_or_404(Result,code=result_code[0])
-        diagnosis_result = DiagnosisResult(diagnosis=diagnosis,result=result)
-        diagnosis_result.save()
+            print("--->",result_code)
+        for r in result_code:
+            diagnosis_result = get_object_or_404(Result,code=r)#more results
+            diagnosis_result = DiagnosisResult(diagnosis=diagnosis,result=diagnosis_result)
+            diagnosis_result.save()
         print (diagnosis_result)
     #считать из БД результаты опроса и отправить в функцию-обработчик (нейронная сеть) [v]
     #добавить модель диагнозов. В зависимости от ответа НС выбирать Диагноз и выводить его пользователю. [~]
@@ -107,4 +112,35 @@ def select_inquirer(request):
     specialty = doctor.specialty_id
     speciality_inquirers = SpecialityInquirer.objects.filter(specialty=specialty)
     return render(request, 'diagnosis/select_inquirer.html', {'inquirers': speciality_inquirers})
+
+@login_required
+@permission_required('diagnosis.add_diagnosis')
+def download_diagnosis_result(request,pk):
+    diagnosis = get_object_or_404(Diagnosis,id=pk)
+    diagnosis_results=DiagnosisResult.objects.filter(diagnosis=diagnosis)
+    patient = diagnosis.patient
+    template=diagnosis.inquirer.medical_report_template
+    d_r=''
+    for r in diagnosis_results:
+        d_r=d_r+r.result.name+'\n'+r.result.description+'\n'+'\n'
+    data = {
+        'patients_surname': patient.surname,
+        'patients_name':patient.name,
+        'patients_patronymic':patient.patronymic,
+        'patients_date_of_birth': '{0} (Полных лет: {1})'.format(patient.date_of_birth,diagnosis.diagnosis_date.year-patient.date_of_birth.year),
+        'diagnosis_date':'{0}'.format(diagnosis.diagnosis_date),
+        'diagnosis_results':d_r,
+    }
+    filename='{0}_{1}_{2}-{3}-{4}'.format(diagnosis.inquirer.name,patient.surname,diagnosis.diagnosis_date.day,diagnosis.diagnosis_date.month,diagnosis.diagnosis_date.year)
+    filename = transliterate.translit(filename,reversed=True)
+    med_report_file=download(template,data)
+    length = med_report_file.tell()
+    med_report_file.seek(0)
+    response = HttpResponse(
+        med_report_file.getvalue(),
+        content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+         )
+    response['Content-Disposition'] = 'attachment; filename={0}.docx'.format(filename)
+    response['Content-Length'] = length
+    return response
 
