@@ -13,7 +13,7 @@
             	{%if perms.diagnosis.add_diagnosis %}
                 <div class="btn-group-vertical w-100" role="group"> <a class="btn btn-secondary"
                         href="{%url 'select_inquirer' %}">Перейти к диагностике</a>
-                    <button type="button" class="btn btn-outline-secondary"> Справка</button>
+                      <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#diagnosisHelp"> Справка</button>
                 </div>
                 {%else%}
                 <div class="card-body ">
@@ -29,7 +29,8 @@
                 <div class="btn-group-vertical w-100" role="group"> <button type="button" class="btn btn-secondary"
                         onClick='location.href="{% url "patients"%}"'>
                         Список пациентов</button>
-                    <button type="button" class="btn btn-outline-secondary">Справка</button>
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#patientsHelp">Справка</button>
+
                 </div>
             </div>
         </div>
@@ -38,12 +39,72 @@
          <h4 class="card-header">Профиль ({{user.get_username}})</h4>
          <div class="card-body ">
                 <div class="btn-group-vertical w-100" role="group"> <button type="button" class="btn btn-secondary"
-                        onClick='location.href=""'> Перейти к своему профилю</button>
-                    <button type="button" class="btn btn-outline-secondary">Справка</button>
+                        onClick='location.href="/profile/{{user.get_username}}"'> Перейти к своему профилю</button>
+                      <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#profileHelp">Справка</button>
                 </div>
             </div>
         </div>
     </div>   
     
+<div class="modal" id="diagnosisHelp" tabindex="-1" role="dialog" aria-labelledby="diagnosisHelpLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="diagnosisHelpLabel">Справка: диагностика</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        На главной странице следует нажать кнопку «Перейти к диагностике», расположенную на карточке с названием «Диагностика». После чего будет осуществлен переход на страницу выбора доступных диагностик. На странице выбора доступных диагностик в виде набора карточек представлены методики обследования, соответствующие специальности врача.          
+Для отображения информации о методе обследования следует нажать кнопку с изображением знака вопроса, расположенную справа от названия методики. 	Для выбора методики требуется нажать кнопку «Выбрать», расположенную в нижней части соответствующей карточки.
+После выбора подходящей методики будет открыта страница опросника. В верхней части данной страницы расположена карточка «Пациент», содержащая элемент в виде выпадающего списка, предназначенный для выбора пациента.
+Ниже представлен раздел «Диагностика», содержащий карточки с вопросами, соответствующими выбранной методике обследования.
+Для осуществления процесса обследования необходимо в каждой карточке вопроса выбрать ответ, данный пациентом. Некоторые методики предполагают выбор в качестве ответа предварительно собранные данных о состоянии здоровья пациента, например, уровень глюкозы в крови.
+Для завершения обследования необходимо нажать кнопку «Отправить», расположенную в нижней части страницы, после чего будет осуществлен переход на страницу информации о диагностике.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
 
+<div class="modal" id="patientsHelp" tabindex="-1" role="dialog" aria-labelledby="patientsHelpLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="patientsHelpLabel">Справка: пациенты</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        На главной странице необходимо нажать на кнопку «Список пациентов», расположенную на карточке «Пациенты», после чего откроется страница списка пациентов.
+        Данная страница содержит в себе список всех пациентов, внесенных в систему, представленный в виде таблицы. Для просмотра более детальной информации о пациенте необходимо нажать кнопку «Подробно» в строке, которая соответствует пациенту, после чего будет осуществлен переход на страницу детальной информации о пациенте. На данной странице в блоке «Пациент» содержатся детальная информация о пациенте, а в блоке «Ранние диагностики» список проведенных ранее обследований для этого пациента в виде таблицы. При нажатии на кнопку «Подробно» в строке соответствующей диагностики будет осуществлен переход на страницу информации о диагностике.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="profileHelp" tabindex="-1" role="dialog" aria-labelledby="profileHelpLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profileHelpLabel">Справка: профиль</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Для перехода на страницу профиля врача следует на главной странице нажать кнопку «Перейти к своему профилю», которая расположена на карточке «Профиль». Страница разделена на разделы: карточка «Профиль», содержащий информацию о враче, карточка «Безопасность», с помощью которой можно завершить все сеансы и сменить пароль, карточка «Проведенные диагностики», содержащая информацию о проведенных ранее врачом-специалистом обследованиях в виде таблицы.      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
 {%endblock%}

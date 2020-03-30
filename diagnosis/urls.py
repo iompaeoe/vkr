@@ -1,3 +1,7 @@
+# модуль является url-диспетчером
+# содержит список url-адресов и соответствующих им представлений
+# предназначен для перенаправления запросов поступающих из 
+# клиентской части соответствующему обработчику
 from django.urls import path, include
 from . import views
 
@@ -11,4 +15,5 @@ urlpatterns = [
     path('diagnosis/new/<int:pk>/save', views.save_diagnosis, name='save_diagnosis'),
     path('diagnosis/select_inquirer',views.select_inquirer,name='select_inquirer'),
     path('diagnosis/download/<int:pk>/',views.download_diagnosis_result,name='download_diagnosis_result'),
+    path('profile/<str:pk>',views.profile,name='profile'),
 ]

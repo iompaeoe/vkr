@@ -1,9 +1,18 @@
+# модуль, предназначенный для генерации документа на 
+# основе заранее подготовленного шаблона
 from __future__ import print_function
 import io
 from mailmerge import MailMerge
 from datetime import date
 # -*- codecs: utf-8 -*-
 ##import codecs
+
+# метод, предназначеный для генерации
+# документа на основе шаблона. 
+# входными данными являютя файл шаблона 
+# и массив данных для заполнения
+# возвращает заполненный данными документ
+# в виде набора байтов 
 def download(template,data):
     document = MailMerge(template)
  

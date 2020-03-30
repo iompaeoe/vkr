@@ -1,7 +1,11 @@
+# модуль предназначен для обработки поступающих запросов от клиента
+# с помощью соответствующих функций
+
 from django.shortcuts import render, get_object_or_404
 from .models import Patient, Diagnosis, Question, Answer, Doctor, Survey, Inquirer, SpecialityInquirer, InquirerQuestion, Result, DiagnosisResult
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
@@ -17,28 +21,39 @@ import pickle
 import sklearn
 from sklearn.externals import joblib
 import io
-
+# метод, возвращающий главную страницу
+# для выполнения требуется авторизация пользователя в системе
 @login_required
 def main(request):
     return render(request, 'diagnosis/main.html', {})
-
+# метод, возвращающий страницу списка пациентов
+# передает в контекст список всех пациентов
+# для выполнения требуется авторизация пользователя в системе
 @login_required
 def patients_list(request):
     patients= Patient.objects.all()
     return render(request, 'diagnosis/patients.html', {'patients':patients})
-
+# метод, возвращающий страницу информации о пациенте
+# передает в контекст информацию о пациенте
+# для выполнения требуется авторизация пользователя в системе
 @login_required
 def patient_detail(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     return render(request, 'diagnosis/patient_detail.html', {'patient': patient})
-
+# метод, возвращающий страницу информации о диагностике
+# передает в контекст информацию о диагностике, включая собранные
+# во время обследования данные о пациенте 
+# для выполнения требуется авторизация пользователя в системе
 @login_required
 def diagnosis_detail(request,pk):
     diagnosis = get_object_or_404(Diagnosis, pk=pk)
     surveys = Survey.objects.filter(diagnosis=diagnosis)
     diagnosis_result = DiagnosisResult.objects.filter(diagnosis=diagnosis)
     return render(request, 'diagnosis/diagnosis_detail.html', {'diagnosis': diagnosis,'surveys':surveys,'results':diagnosis_result,})
-
+# метод, возвращающий страницу диагностики
+# передает в контекст информацию о диагностике, пациентах, вопросы с соответствующими ответами, опросник
+# для выполнения требуется наличие прав на добавление диагноза
+# для выполнения требуется авторизация пользователя в системе
 @permission_required('diagnosis.add_diagnosis')
 @login_required
 def diagnosis_new(request,pk):
@@ -50,7 +65,6 @@ def diagnosis_new(request,pk):
     questions = []
     for iq in InquirerQuestions:
         questions.append(iq.question)
-    #questions = Question.objects.all()
     context = {
         'form': form,
         'patients':patients,
@@ -59,12 +73,13 @@ def diagnosis_new(request,pk):
         'inquirer':inquirer,
     }
     return render(request, 'diagnosis/diagnosis_new.html', context)
-
+# метод, выполняющий анализ и сохранение результатов обследования
+# возвращает страницу с информацией о диагностике
+# для выполнения требуется наличие прав на добавление диагноза
+# для выполнения требуется авторизация пользователя в системе
 @permission_required('diagnosis.add_diagnosis')
 @login_required
 def save_diagnosis(request,pk):
-    #if request.method == 'POST':
-    #atomic: добавление диагностики и затем добавление опроса
     with transaction.atomic():
         patient_code = request.POST.get('patient')
         patient = get_object_or_404(Patient,id=patient_code)
@@ -95,15 +110,15 @@ def save_diagnosis(request,pk):
             result_code=module.analysis(answer_values)
             print("--->",result_code)
         for r in result_code:
-            diagnosis_result = get_object_or_404(Result,code=r)#more results
+            diagnosis_result = get_object_or_404(Result,code=r)
             diagnosis_result = DiagnosisResult(diagnosis=diagnosis,result=diagnosis_result)
             diagnosis_result.save()
         print (diagnosis_result)
-    #считать из БД результаты опроса и отправить в функцию-обработчик (нейронная сеть) [v]
-    #добавить модель диагнозов. В зависимости от ответа НС выбирать Диагноз и выводить его пользователю. [~]
-    #подготовить шаблон заключения [x]2/
     return diagnosis_detail(request,pk=diagnosis.id)
-
+# метод, предназначенный для выбора опросника
+# возвращает страницу выбора опросников
+# для выполнения требуется наличие прав на добавление диагноза
+# для выполнения требуется авторизация пользователя в системе
 @login_required
 @permission_required('diagnosis.add_diagnosis')
 def select_inquirer(request):
@@ -112,7 +127,10 @@ def select_inquirer(request):
     specialty = doctor.specialty_id
     speciality_inquirers = SpecialityInquirer.objects.filter(specialty=specialty)
     return render(request, 'diagnosis/select_inquirer.html', {'inquirers': speciality_inquirers})
-
+# метод, выполняющий генерацию файла на основе заранее загруженного шаблона
+# возвращает сгенерированный документ
+# для выполнения требуется наличие прав на добавление диагноза
+# для выполнения требуется авторизация пользователя в системе
 @login_required
 @permission_required('diagnosis.add_diagnosis')
 def download_diagnosis_result(request,pk):
@@ -144,3 +162,14 @@ def download_diagnosis_result(request,pk):
     response['Content-Length'] = length
     return response
 
+@login_required
+@permission_required('diagnosis.add_diagnosis')
+def profile(request,pk):
+    user = get_object_or_404(User,username=pk)
+    doctor = get_object_or_404(Doctor,login = user)
+    print('suc')
+    context = {
+        'doctor':doctor,
+    }
+    return render(request,'diagnosis/profile.html',context)
+    

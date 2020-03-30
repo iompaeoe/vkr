@@ -1,0 +1,101 @@
+{% extends 'diagnosis/base.html' %}
+
+{%block content%}
+<div class="container">
+  <div class="row card-group mx-0 my-0">
+    <div class="container col-md-6">
+        <div class="card mt-4 ml-1 shadow-lg">
+            <h4 class="card-header">Профиль: {{doctor.surname}} {{doctor.name}} {{doctor.patronymic}} ({{user.get_username}})</h4>
+            <form class="card-body">
+                <label>{{doctor.specialty.description}}</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Дата рождения:</span>
+                </div>
+                <input type="text" readonly value="{{doctor.date_of_birth}}" class="form-control bg-light">
+            </div>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Телефон:</span>
+            </div>
+            <input type="text" readonly value="{{doctor.phone}}" class="form-control bg-light">
+        </div>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Электронная почта:</span>
+        </div>
+        <input type="text" readonly value="{{doctor.email}}" class="form-control bg-light">
+    </div>
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Адрес:</span>
+    </div>
+    <input type="text" readonly value="{{doctor.address}}" class="form-control bg-light">
+</div>
+</form>
+</div>
+</div>
+<div class="container col-md-6">
+    <div class="card mt-4 shadow-lg">
+        <h4 class="card-header">Безопасность</h4>
+        <div class="card-body">
+            <a class="btn btn-danger" href="{% url 'logout'%}">Завершить все сеансы</a>
+            <hr>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Введите текущий пароль:</span>
+            </div>
+            <input type="password"   class="form-control bg-light">
+        </div>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Введите новый пароль:</span>
+        </div>
+        <input type="password"   class="form-control bg-light">
+    </div>
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Введите новый пароль ещё раз:</span>
+    </div>
+    <input type="password"   class="form-control bg-light">
+    <a class="btn btn-outline-primary" href="">Сменить</a>
+
+</div>
+
+</div>
+</div>
+</div>
+
+
+<div class="container">
+    <div class="card  mt-4 shadow-lg">
+        <h4 class="card-header">Проведённые диагностики</h4>
+        <div class="card-body table-responsive">
+            <table class="table table-light table-bordered table-striped table-hover  col-md-12">
+                <thead>
+                    <tr>
+                     <th>#</th>
+                     <th>Пациент</th>
+                     <th>Дата диагностики</th>
+                     <th>Время</th>
+                     <th>Опросник</th>
+                     <th>Действия</th>
+                 </tr>
+             </thead>
+             <tbody>
+                {% for diagnosis in doctor.diagnosis_set.all %}                        
+                <tr>
+                    <th scope="row">{{diagnosis.id}} </th>
+                    <td>{{diagnosis.patient}}</td>
+                    <td>{{diagnosis.diagnosis_date.date}}</td>
+                    <td>{{diagnosis.diagnosis_date.time}}</td>
+                    <td>{{diagnosis.inquirer}}</td>
+                    <td><a class="btn btn-info"  href="{% url 'diagnosis_detail' pk=diagnosis.pk %}">Подробно</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+{%endblock%}
